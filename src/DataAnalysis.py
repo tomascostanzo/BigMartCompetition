@@ -4,8 +4,8 @@ import matplotlib as plt
 import re
 from DataAnalysisHelpers import PrepareData
 
-TrainData = pd.read_csv('../res/TrainData.txt', sep=",")
-TestData = pd.read_csv('../res/TestData.txt', sep=",")
+TrainData = pd.read_csv('res/TrainData.txt', sep=",")
+TestData = pd.read_csv('res/TestData.txt', sep=",")
 
 
-TrainDataForMLAlgo, TestDataForMLAlgo = PrepareData(TrainData, TestData)
+TrainDataForMLAlgo = PrepareData(TrainData)
