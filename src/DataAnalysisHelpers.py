@@ -30,7 +30,7 @@ def PrepareData(Data):
     #Add Age of supermarket
     TrainDataLowerCase['Supermarket_Age'] = TrainDataLowerCase.apply(lambda row: 2019 - row['Outlet_Establishment_Year'], axis=1)
 
-    #REplace labels into one hot encodine
+    #Replace labels into one hot encodine
     TrainDataOneHotEcoding = pd.get_dummies(TrainDataLowerCase, columns=['Item_Fat_Content', 'Outlet_Type', 'Outlet_Location_Type', 'Outlet_Identifier', 'Item_Type', 'Outlet_Size'])
 
     #Drop identifier -> see if it is good
@@ -39,7 +39,8 @@ def PrepareData(Data):
     y = TrainDataForMLAlgo.pop('Item_Outlet_Sales')
     x = TrainDataForMLAlgo
 
+    assert(len(x) == len(y))
+
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.33)
 
-
-    return TrainDataForMLAlgo
+    return X_train, X_test, y_train, y_test

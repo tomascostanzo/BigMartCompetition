@@ -8,4 +8,4 @@ TrainData = pd.read_csv('res/TrainData.txt', sep=",")
 TestData = pd.read_csv('res/TestData.txt', sep=",")
 
 
-TrainDataForMLAlgo = PrepareData(TrainData)
+X_train, X_test, y_train, y_test = PrepareData(TrainData)
