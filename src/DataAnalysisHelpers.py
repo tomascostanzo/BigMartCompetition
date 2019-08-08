@@ -6,9 +6,9 @@ from sklearn.model_selection import train_test_split
 
 def PrepareData(Data):
 
-    TrainHead = Data.head()
+    #TrainHead = Data.head()
 
-    print(TrainHead.columns)
+    #print(TrainHead.columns)
 
     # Drop the rows where at least one element is missing.
     TrainDataNotNull = Data.dropna()
