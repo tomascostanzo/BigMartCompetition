@@ -41,6 +41,17 @@ def PrepareData(Data):
 
     assert(len(x) == len(y))
 
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.33)
+    #Get stats
+    x_stats = x.describe()
+    x_stats = x_stats.transpose()
+
+    #Normalize
+    normed_x = norm(x, x_stats)
+
+    X_train, X_test, y_train, y_test = train_test_split(normed_x, y, test_size=0.33)
 
     return X_train, X_test, y_train, y_test
+
+
+def norm(DataSet, DataSetStats):
+    return (DataSet - DataSetStats['mean']) / DataSetStats['std']
