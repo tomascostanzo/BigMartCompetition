@@ -56,3 +56,6 @@ def PrepareData(Data):
 
 def norm(DataSet, DataSetStats):
     return (DataSet - DataSetStats['mean']) / DataSetStats['std']
+
+#def norm2(DataSet, DataSetStats, ColumnsToNormalize)
+ #   modDfObj = DataSet.apply(lambda x: (x - DataSetStats['mean']) / DataSetStats['std'] if x.name in ColumnsToNormalize else x)
