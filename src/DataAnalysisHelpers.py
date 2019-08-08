@@ -48,6 +48,9 @@ def PrepareData(Data):
     #Normalize
     #Normalizing even one hot encoding, check if better not doing so
     normed_x = norm(x, x_stats)
+    test = norm2(x, x_stats, ["Item_Fat_Content"])
+    print(x)
+    print(test)
 
     X_train, X_test, y_train, y_test = train_test_split(normed_x, y, test_size=0.33)
 
@@ -57,5 +60,5 @@ def PrepareData(Data):
 def norm(DataSet, DataSetStats):
     return (DataSet - DataSetStats['mean']) / DataSetStats['std']
 
-#def norm2(DataSet, DataSetStats, ColumnsToNormalize)
- #   modDfObj = DataSet.apply(lambda x: (x - DataSetStats['mean']) / DataSetStats['std'] if x.name in ColumnsToNormalize else x)
+#def norm2(DataSet, DataSetStats, ColumnsToNormalize):
+   # modDfObj = DataSet.apply(lambda x: (x - DataSetStats[x.name]['mean']) / DataSetStats[x.name]['std'] )

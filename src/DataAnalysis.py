@@ -22,5 +22,3 @@ TestData = pd.read_csv('res/TestData.txt', sep=",")
 x_train, x_test, y_train, y_test = PrepareData(TrainData)
 sns.pairplot(x_train[["Item_Weight", "Item_MRP", "Item_Visibility"]], diag_kind="kde")
 plt.show()
-
-print(x_train)
