@@ -4,42 +4,40 @@ import matplotlib as plt
 import re
 from sklearn.model_selection import train_test_split
 
-def PrepareData(Data):
+def PrepareData(RawData):
 
-    #TrainHead = Data.head()
-
-    #print(TrainHead.columns)
+    Data = RawData.copy()
 
     # Drop the rows where at least one element is missing.
-    TrainDataNotNull = Data.dropna()
+    Data = Data.dropna()
 
     #Remove special characters
-    TrainDataWithoutSpecialCharacters = TrainDataNotNull.applymap(lambda s:s.replace('[^a-zA-Z0-9-_.]', '') if type(s) == str else s)
+    Data  = Data.applymap(lambda s:s.replace('[^a-zA-Z0-9-_.]', '') if type(s) == str else s)
 
     #Put all labels In lower or upper case
-    TrainDataLowerCase = TrainDataWithoutSpecialCharacters.applymap(lambda s:s.lower() if type(s) == str else s)
+    Data = Data.applymap(lambda s:s.lower() if type(s) == str else s)
 
+    #Drop identifier -> see if it is good
+    Data = Data.drop(['Item_Identifier'], axis=1)
+
+    #Here find manually all similar abbreviations
     abbr_dict={
         r"\breg\b":"regular",
         r"\blf\b":"low fat",
         }
 
     #Replace abbreviations
-    TrainDataLowerCase.replace(abbr_dict, regex=True, inplace=True)
-
-    #Add Age of supermarket
-    TrainDataLowerCase['Supermarket_Age'] = TrainDataLowerCase.apply(lambda row: 2019 - row['Outlet_Establishment_Year'], axis=1)
-
-    print(TrainDataLowerCase.columns)
+    Data.replace(abbr_dict, regex=True, inplace=True)
 
     #Replace labels into one hot encodine
-    TrainDataOneHotEcoding = pd.get_dummies(TrainDataLowerCase, columns=['Item_Fat_Content', 'Outlet_Type', 'Outlet_Location_Type', 'Outlet_Identifier', 'Item_Type', 'Outlet_Size'])
+    Data = pd.get_dummies(Data, columns=['Item_Fat_Content', 'Outlet_Type', 'Outlet_Location_Type', 'Outlet_Identifier', 'Item_Type', 'Outlet_Size'])
 
-    #Drop identifier -> see if it is good
-    TrainDataForMLAlgo = TrainDataOneHotEcoding.drop(['Item_Identifier'], axis=1)
+    #Add other features
+    Data = AddOtherFeaturesManually(Data)
 
-    y = TrainDataForMLAlgo.pop('Item_Outlet_Sales')
-    x = TrainDataForMLAlgo
+    #Separe the output (predictions) and input data
+    y = Data.pop('Item_Outlet_Sales')
+    x = Data
 
     assert(len(x) == len(y))
 
@@ -51,11 +49,20 @@ def PrepareData(Data):
     #Normalizing even one hot encoding, check if better not doing so
     normed_x = normalizeSelectedColumns(x, x_stats, ['Item_Weight','Item_Visibility','Item_MRP','Outlet_Establishment_Year','Supermarket_Age'])
 
-    X_train, X_test, y_train, y_test = train_test_split(normed_x, y, test_size=0.33)
+    x_train, x_test, y_train, y_test = train_test_split(normed_x, y, test_size=0.33)
 
-    return X_train, X_test, y_train, y_test
+    return x_train, x_test, y_train, y_test
 
 
 def normalizeSelectedColumns(DataSet, DataSetStats, ColumnsToNormalize):
     return DataSet.apply(lambda x: (x - DataSetStats['mean'][x.name]) / DataSetStats['std'][x.name] if x.name in ColumnsToNormalize else x, axis=0)
 
+def AddOtherFeaturesManually(Data):
+    Data['Supermarket_Age'] = Data.apply(lambda row: 2019 - row['Outlet_Establishment_Year'], axis=1)
+    return Data
+
+"""
+Help functions:
+TrainHead = Data.head()
+print(TrainHead.columns)
+"""
