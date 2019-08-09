@@ -30,6 +30,8 @@ def PrepareData(Data):
     #Add Age of supermarket
     TrainDataLowerCase['Supermarket_Age'] = TrainDataLowerCase.apply(lambda row: 2019 - row['Outlet_Establishment_Year'], axis=1)
 
+    print(TrainDataLowerCase.columns)
+
     #Replace labels into one hot encodine
     TrainDataOneHotEcoding = pd.get_dummies(TrainDataLowerCase, columns=['Item_Fat_Content', 'Outlet_Type', 'Outlet_Location_Type', 'Outlet_Identifier', 'Item_Type', 'Outlet_Size'])
 
@@ -47,19 +49,13 @@ def PrepareData(Data):
 
     #Normalize
     #Normalizing even one hot encoding, check if better not doing so
-    normed_x = norm(x, x_stats)
-    test = norm2(x, x_stats, ["Item_Fat_Content"])
-    print(x)
-    print(test)
+    normed_x = normalizeSelectedColumns(x, x_stats, ['Item_Weight','Item_Visibility','Item_MRP','Outlet_Establishment_Year','Supermarket_Age'])
 
     X_train, X_test, y_train, y_test = train_test_split(normed_x, y, test_size=0.33)
 
     return X_train, X_test, y_train, y_test
 
 
-def norm(DataSet, DataSetStats):
-    return (DataSet - DataSetStats['mean']) / DataSetStats['std']
+def normalizeSelectedColumns(DataSet, DataSetStats, ColumnsToNormalize):
+    return DataSet.apply(lambda x: (x - DataSetStats['mean'][x.name]) / DataSetStats['std'][x.name] if x.name in ColumnsToNormalize else x, axis=0)
 
-
-#def norm2(DataSet, DataSetStats, ColumnsToNormalize):
-   # modDfObj = DataSet.apply(lambda x: (x - DataSetStats[x.name]['mean']) / DataSetStats[x.name]['std'] )
