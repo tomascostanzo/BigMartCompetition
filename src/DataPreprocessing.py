@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib as plt
 import re
 from sklearn.model_selection import train_test_split
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def PrepareData(RawData):
 
@@ -60,6 +62,10 @@ def normalizeSelectedColumns(DataSet, DataSetStats, ColumnsToNormalize):
 def AddOtherFeaturesManually(Data):
     Data['Supermarket_Age'] = Data.apply(lambda row: 2019 - row['Outlet_Establishment_Year'], axis=1)
     return Data
+
+def ShowDataDistribution(Data):
+    sns.pairplot(Data[['Item_Weight','Item_Visibility','Item_MRP','Outlet_Establishment_Year','Supermarket_Age']], diag_kind="kde")
+    plt.show()
 
 """
 Help functions:

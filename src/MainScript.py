@@ -2,9 +2,7 @@
 import pathlib
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import re
-import seaborn as sns
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -22,8 +20,7 @@ def main():
 
     # Prepare train and test data to be used in our ML algorithm
     x_train, x_test, y_train, y_test = PrepareData(TrainData)
-    sns.pairplot(x_train[['Item_Weight','Item_Visibility','Item_MRP','Outlet_Establishment_Year','Supermarket_Age']], diag_kind="kde")
-    plt.show()
+
 
 
 if __name__ == "__main__":
