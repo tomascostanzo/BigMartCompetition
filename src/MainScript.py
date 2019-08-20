@@ -8,6 +8,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import DataPreprocessing
 import ModelMgr
+import Config
 
 
 
@@ -27,11 +28,20 @@ def main():
     Model = ModelMgr.BuildModel(x_train)
     Model.summary()
 
-    #Test
-    example_batch = x_train[:10]
-    example_result = Model.predict(example_batch)
-    print(example_result)
+    ModelCallBack = ModelMgr.PrintDot(x_train.shape[0])
 
+    #Train model
+    history = Model.fit(
+        x_train, y_train,
+        batch_size=Config.BATCH_SIZE,
+        epochs=Config.EPOCHS, validation_split=Config.VALIDATION_SPLIT, verbose=0,
+        callbacks=[ModelCallBack])
+
+    hist = pd.DataFrame(history.history)
+    hist['epoch'] = history.epoch
+    print(hist.tail())
+
+    ModelMgr.plot_history(history)
 
 
 if __name__ == "__main__":
